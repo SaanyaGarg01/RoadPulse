@@ -1,70 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, useMap } from 'react-leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
-import { mapMarkers, type MapMarker } from '../data/mockData';
+import { mapMarkers, type MapMarker, indianCities } from '../data/mockData';
 import 'leaflet/dist/leaflet.css';
 
-interface CityConfig {
-  name: string;
-  coords: [number, number];
-  zoom: number;
-  description: string;
-  mostAffectedZone: string;
-}
-
-const cities: Record<string, CityConfig> = {
-  Bengaluru: {
-    name: 'Bengaluru',
-    coords: [12.9716, 77.5946],
-    zoom: 13,
-    description: 'Silicon Valley under constant pipeline and metro construction surgery.',
-    mostAffectedZone: 'East Bengaluru (ORR)',
-  },
-  Mumbai: {
-    name: 'Mumbai',
-    coords: [19.0760, 72.8777],
-    zoom: 12,
-    description: 'Coastal Road construction and metro work arterial blockages.',
-    mostAffectedZone: 'Saki Naka Junction & Link Road',
-  },
-  Delhi: {
-    name: 'Delhi NCR',
-    coords: [28.6139, 77.2090],
-    zoom: 12,
-    description: 'Flyover maintenance, stormwater drain widening, and highway digging.',
-    mostAffectedZone: 'South Delhi (Ring Road)',
-  },
-  Hyderabad: {
-    name: 'Hyderabad',
-    coords: [17.3850, 78.4867],
-    zoom: 12,
-    description: 'IT Corridor flyovers and underground telecom cabling.',
-    mostAffectedZone: 'HITEC City & Gachibowli',
-  },
-  Chennai: {
-    name: 'Chennai',
-    coords: [13.0827, 80.2707],
-    zoom: 12,
-    description: 'Metro rail phase 2 digging and storm drain excavations.',
-    mostAffectedZone: 'OMR (IT Expressway)',
-  },
-  Kolkata: {
-    name: 'Kolkata',
-    coords: [22.5726, 88.3639],
-    zoom: 12,
-    description: 'Heritage street renovations and water line surgery.',
-    mostAffectedZone: 'Salt Lake Sector V',
-  },
-  Pune: {
-    name: 'Pune',
-    coords: [18.5204, 73.8567],
-    zoom: 12,
-    description: 'Metro line constructions and Hinjawadi IT zone pipeline surgery.',
-    mostAffectedZone: 'Hinjawadi IT Park',
-  },
-};
-
-// Sub-component to handle map center dynamic updates
+// Sub-component to handle map center dynamic updates smoothly
 const ChangeView: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
@@ -94,6 +34,33 @@ const MapSection: React.FC = () => {
   const [selected, setSelected] = useState<MapMarker | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>('Bengaluru');
 
+  const activeCityDetails = indianCities.find(c => c.name === selectedCity) || indianCities[0];
+
+  // Dynamic Map State for centering/zooming
+  const [mapCenter, setMapCenter] = useState<[number, number]>([activeCityDetails.lat, activeCityDetails.lng]);
+  const [mapZoom, setMapZoom] = useState<number>(13);
+
+  // City Combobox Dropdown States
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [citySearchQuery, setCitySearchQuery] = useState('');
+
+  // Area Search States
+  const [areaSearchQuery, setAreaSearchQuery] = useState('');
+  const [isAreaSuggestionsOpen, setIsAreaSuggestionsOpen] = useState(false);
+
+  // Synchronize city center when user selects a new city
+  const handleCityChange = (cityName: string) => {
+    setSelectedCity(cityName);
+    const cityDetails = indianCities.find(c => c.name === cityName) || indianCities[0];
+    setMapCenter([cityDetails.lat, cityDetails.lng]);
+    setMapZoom(12); // standard city view zoom
+    setSelected(null); // clear open marker details
+    setAreaSearchQuery(''); // reset area search
+    setIsCityDropdownOpen(false);
+    setCitySearchQuery('');
+  };
+
+  // Filter markers based on selected city & preset criteria
   const filteredMarkers = mapMarkers.filter(m => {
     if (m.city !== selectedCity) return false;
     if (filter === 'critical') return m.status === 'critical';
@@ -103,15 +70,66 @@ const MapSection: React.FC = () => {
   });
 
   const cityMarkers = mapMarkers.filter(m => m.city === selectedCity);
+  
+  // Real-time calculated stats for the city
   const activeSites = cityMarkers.filter(m => m.status !== 'repaired').length;
   const overdueMarkers = cityMarkers.filter(m => m.overdueDays > 0);
   const overdueDaysAvg = overdueMarkers.length > 0
     ? Math.round(overdueMarkers.reduce((s, m) => s + m.overdueDays, 0) / overdueMarkers.length)
     : 0;
-  const mostAffected = cities[selectedCity]?.mostAffectedZone || 'Central Zone';
+
+  // Compute most affected zone dynamically
+  const zoneCounts: Record<string, number> = {};
+  cityMarkers.forEach(m => {
+    if (m.status !== 'repaired') {
+      zoneCounts[m.zone] = (zoneCounts[m.zone] || 0) + 1;
+    }
+  });
+  let mostAffected = 'Central Zone';
+  let maxCount = 0;
+  Object.entries(zoneCounts).forEach(([zone, count]) => {
+    if (count > maxCount) {
+      maxCount = count;
+      mostAffected = zone;
+    }
+  });
+  if (maxCount === 0 && activeCityDetails.zones.length > 0) {
+    mostAffected = activeCityDetails.zones[0];
+  }
+
+  // Filter cities for search combobox
+  const filteredCities = indianCities.filter(c =>
+    c.name.toLowerCase().includes(citySearchQuery.toLowerCase())
+  );
+
+  // Filter area suggestions based on typing
+  const matchingMarkers = cityMarkers.filter(m => {
+    if (!areaSearchQuery.trim()) return false;
+    const q = areaSearchQuery.toLowerCase();
+    return (
+      m.roadName.toLowerCase().includes(q) ||
+      m.zone.toLowerCase().includes(q) ||
+      m.contractor.toLowerCase().includes(q) ||
+      m.description.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <section id="map" style={{ background: '#0a0a0f', padding: '80px 0 0' }}>
+      {/* Click-outside backdrop capture overlays */}
+      {isCityDropdownOpen && (
+        <div
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1005 }}
+          onClick={() => setIsCityDropdownOpen(false)}
+        />
+      )}
+      {isAreaSuggestionsOpen && (
+        <div
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1005 }}
+          onClick={() => setIsAreaSuggestionsOpen(false)}
+        />
+      )}
+
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -126,35 +144,252 @@ const MapSection: React.FC = () => {
             Real-Time Dig Intelligence
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto', marginBottom: '24px' }}>
-            {cities[selectedCity]?.description || 'Every active road cut in India, color-coded and live-updated.'}
+            {activeCityDetails.description || 'Every active road cut in India, color-coded and live-updated.'}
           </p>
 
-          {/* Premium City Selector */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '800px', margin: '0 auto' }}>
-            {Object.keys(cities).map(cityName => (
+          {/* Premium Glassmorphic Search Deck */}
+          <div
+            style={{
+              display: 'flex',
+              gap: '16px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              alignItems: 'center',
+              maxWidth: '850px',
+              margin: '0 auto',
+              background: 'rgba(255,255,255,0.02)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.05)',
+              borderRadius: '16px',
+              padding: '16px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              position: 'relative',
+              zIndex: 1020
+            }}
+          >
+            {/* Search & Select City Dropdown */}
+            <div style={{ position: 'relative', minWidth: '220px', flex: '1 1 200px' }}>
               <button
-                key={cityName}
-                onClick={() => {
-                  setSelectedCity(cityName);
-                  setSelected(null);
-                }}
+                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
                 style={{
-                  padding: '8px 18px',
-                  borderRadius: '100px',
-                  border: '1px solid',
-                  borderColor: selectedCity === cityName ? '#00D4FF' : 'rgba(255,255,255,0.08)',
-                  background: selectedCity === cityName ? 'rgba(0,212,255,0.1)' : 'rgba(255,255,255,0.02)',
-                  color: selectedCity === cityName ? '#00D4FF' : 'rgba(255,255,255,0.5)',
-                  cursor: 'pointer',
-                  fontSize: '13px',
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.03)',
+                  color: '#fff',
+                  fontSize: '14px',
                   fontWeight: 600,
-                  boxShadow: selectedCity === cityName ? '0 0 15px rgba(0,212,255,0.15)' : 'none',
-                  transition: 'all 0.25s ease',
+                  textAlign: 'left',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                 }}
               >
-                🇮🇳 {cityName}
+                <span>🇮🇳 {selectedCity}</span>
+                <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', transition: 'transform 0.2s', transform: isCityDropdownOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
               </button>
-            ))}
+
+              {isCityDropdownOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    left: 0,
+                    right: 0,
+                    zIndex: 1030,
+                    background: 'rgba(10,10,15,0.98)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(0,212,255,0.2)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(0,212,255,0.1)',
+                    maxHeight: '300px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Filter cities..."
+                    value={citySearchQuery}
+                    onChange={(e) => setCitySearchQuery(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      background: 'rgba(255,255,255,0.05)',
+                      color: '#fff',
+                      fontSize: '13px',
+                      outline: 'none'
+                    }}
+                  />
+                  <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px', paddingRight: '4px' }}>
+                    {filteredCities.map(city => (
+                      <button
+                        key={city.name}
+                        onClick={() => handleCityChange(city.name)}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          borderRadius: '6px',
+                          border: 'none',
+                          background: selectedCity === city.name ? 'rgba(0,212,255,0.1)' : 'transparent',
+                          color: selectedCity === city.name ? '#00D4FF' : 'rgba(255,255,255,0.7)',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transition: 'all 0.15s'
+                        }}
+                      >
+                        <span>🇮🇳</span>
+                        <span>{city.name}</span>
+                      </button>
+                    ))}
+                    {filteredCities.length === 0 && (
+                      <div style={{ padding: '16px', color: 'rgba(255,255,255,0.4)', fontSize: '13px', textAlign: 'center' }}>
+                        No cities found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Search Area or Road */}
+            <div style={{ position: 'relative', flex: '2 1 300px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                <input
+                  type="text"
+                  placeholder={`🔍 Search area, road, or contractor in ${selectedCity}...`}
+                  value={areaSearchQuery}
+                  onChange={(e) => {
+                    setAreaSearchQuery(e.target.value);
+                    setIsAreaSuggestionsOpen(true);
+                  }}
+                  onFocus={() => setIsAreaSuggestionsOpen(true)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px 12px 40px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    background: 'rgba(255,255,255,0.03)',
+                    color: '#fff',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}
+                />
+                {areaSearchQuery && (
+                  <button
+                    onClick={() => {
+                      setAreaSearchQuery('');
+                      setIsAreaSuggestionsOpen(false);
+                    }}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'none',
+                      border: 'none',
+                      color: 'rgba(255,255,255,0.4)',
+                      cursor: 'pointer',
+                      fontSize: '16px'
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {isAreaSuggestionsOpen && areaSearchQuery.trim() && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    left: 0,
+                    right: 0,
+                    zIndex: 1030,
+                    background: 'rgba(10,10,15,0.98)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,107,53,0.2)',
+                    borderRadius: '12px',
+                    padding: '8px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255,107,53,0.1)',
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px'
+                  }}
+                >
+                  {matchingMarkers.map(marker => (
+                    <button
+                      key={marker.id}
+                      onClick={() => {
+                        setSelected(marker);
+                        setMapCenter([marker.lat, marker.lng]);
+                        setMapZoom(15); // Zoom into the road
+                        setIsAreaSuggestionsOpen(false);
+                        setAreaSearchQuery(marker.roadName);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#fff',
+                        fontSize: '13px',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '12px',
+                        transition: 'all 0.15s'
+                      }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontWeight: 600 }}>{marker.roadName}</span>
+                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                          📍 {marker.zone} • {marker.contractor}
+                        </span>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: '100px',
+                          background: `${statusColors[marker.status]}20`,
+                          color: statusColors[marker.status],
+                          border: `1px solid ${statusColors[marker.status]}40`,
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {marker.status === 'critical' ? 'Critical' : marker.status === 'partial' ? 'Partial' : marker.status === 'in-progress' ? 'In Progress' : 'Repaired'}
+                      </span>
+                    </button>
+                  ))}
+                  {matchingMarkers.length === 0 && (
+                    <div style={{ padding: '16px', color: 'rgba(255,255,255,0.4)', fontSize: '13px', textAlign: 'center' }}>
+                      No roads or areas found matching "{areaSearchQuery}"
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </motion.div>
 
@@ -237,12 +472,12 @@ const MapSection: React.FC = () => {
           {/* Map */}
           <div style={{ flex: 1, borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', position: 'relative' }}>
             <MapContainer
-              center={cities[selectedCity].coords}
-              zoom={cities[selectedCity].zoom}
+              center={mapCenter}
+              zoom={mapZoom}
               style={{ height: '100%', width: '100%', background: '#0a0a0f' }}
               zoomControl={false}
             >
-              <ChangeView center={cities[selectedCity].coords} zoom={cities[selectedCity].zoom} />
+              <ChangeView center={mapCenter} zoom={mapZoom} />
               <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -258,7 +493,13 @@ const MapSection: React.FC = () => {
                     fillOpacity: 0.8,
                     weight: 2,
                   }}
-                  eventHandlers={{ click: () => setSelected(marker) }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelected(marker);
+                      setMapCenter([marker.lat, marker.lng]);
+                      setMapZoom(15);
+                    }
+                  }}
                 />
               ))}
             </MapContainer>
