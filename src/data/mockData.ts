@@ -2,6 +2,7 @@
 
 export interface MapMarker {
   id: string;
+  city: string;
   lat: number;
   lng: number;
   roadName: string;
@@ -43,8 +44,10 @@ export interface TickerItem {
 
 
 export const mapMarkers: MapMarker[] = [
+  // --- BENGALURU ---
   {
     id: 'm1',
+    city: 'Bengaluru',
     lat: 12.9716, lng: 77.5946,
     roadName: 'MG Road',
     contractor: 'Apex Infra Pvt. Ltd.',
@@ -58,6 +61,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm2',
+    city: 'Bengaluru',
     lat: 12.9775, lng: 77.6088,
     roadName: 'Outer Ring Road - ORR',
     contractor: 'Metropolis Diggers Ltd.',
@@ -71,6 +75,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm3',
+    city: 'Bengaluru',
     lat: 12.9630, lng: 77.5855,
     roadName: 'Brigade Road',
     contractor: 'L&T Infrastructure Corp.',
@@ -84,6 +89,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm4',
+    city: 'Bengaluru',
     lat: 12.9819, lng: 77.5871,
     roadName: 'Residency Road',
     contractor: 'Civic Build Corp.',
@@ -97,6 +103,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm5',
+    city: 'Bengaluru',
     lat: 12.9541, lng: 77.6018,
     roadName: 'Hosur Road',
     contractor: 'Sharma Construction Works',
@@ -110,6 +117,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm6',
+    city: 'Bengaluru',
     lat: 12.9920, lng: 77.5712,
     roadName: 'Sadashivanagar Road',
     contractor: 'GreenPath Infra',
@@ -125,6 +133,7 @@ export const mapMarkers: MapMarker[] = [
     id: 'm7',
     lat: 12.9672, lng: 77.6131,
     roadName: 'Indiranagar 100ft Road',
+    city: 'Bengaluru',
     contractor: 'Apex Infra Pvt. Ltd.',
     permitDate: '2026-05-08',
     promisedCompletion: '2026-05-22',
@@ -136,6 +145,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm8',
+    city: 'Bengaluru',
     lat: 12.9355, lng: 77.6246,
     roadName: 'HSR Layout Sector 7',
     contractor: 'Kovalam Builders',
@@ -149,6 +159,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm9',
+    city: 'Bengaluru',
     lat: 13.0197, lng: 77.5640,
     roadName: 'Yeshwanthpur Main Road',
     contractor: 'Metropolis Diggers Ltd.',
@@ -162,6 +173,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm10',
+    city: 'Bengaluru',
     lat: 12.9490, lng: 77.5673,
     roadName: 'JP Nagar Ring Road',
     contractor: 'Delta Roads Pvt. Ltd.',
@@ -175,6 +187,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm11',
+    city: 'Bengaluru',
     lat: 12.9883, lng: 77.6228,
     roadName: 'Old Madras Road',
     contractor: 'Sharma Construction Works',
@@ -188,6 +201,7 @@ export const mapMarkers: MapMarker[] = [
   },
   {
     id: 'm12',
+    city: 'Bengaluru',
     lat: 12.9280, lng: 77.5755,
     roadName: 'Banashankari Temple Road',
     contractor: 'Civic Build Corp.',
@@ -198,6 +212,396 @@ export const mapMarkers: MapMarker[] = [
     zone: 'Southwest Bengaluru',
     nearSchool: true,
     description: 'Footpath reconstruction completed ahead of schedule'
+  },
+
+  // --- MUMBAI ---
+  {
+    id: 'mum1',
+    city: 'Mumbai',
+    lat: 18.9414, lng: 72.8237,
+    roadName: 'Marine Drive Arterial Road',
+    contractor: 'Delta Roads Pvt. Ltd.',
+    permitDate: '2026-04-01',
+    promisedCompletion: '2026-04-20',
+    status: 'critical',
+    overdueDays: 30,
+    zone: 'South Mumbai',
+    nearSchool: false,
+    description: 'Coastal Road integration works causing major bottlenecks'
+  },
+  {
+    id: 'mum2',
+    city: 'Mumbai',
+    lat: 19.0962, lng: 72.8877,
+    roadName: 'Saki Naka Junction',
+    contractor: 'Metropolis Diggers Ltd.',
+    permitDate: '2026-04-10',
+    promisedCompletion: '2026-04-25',
+    status: 'critical',
+    overdueDays: 25,
+    zone: 'Andheri East',
+    nearSchool: true,
+    description: 'Underground metro cabling work, heavy traffic delays'
+  },
+  {
+    id: 'mum3',
+    city: 'Mumbai',
+    lat: 19.1197, lng: 72.8468,
+    roadName: 'Link Road (Andheri)',
+    contractor: 'L&T Infrastructure Corp.',
+    permitDate: '2026-04-15',
+    promisedCompletion: '2026-05-05',
+    status: 'partial',
+    overdueDays: 15,
+    zone: 'Western Suburbs',
+    nearSchool: false,
+    description: 'Stormwater drain widening work'
+  },
+  {
+    id: 'mum4',
+    city: 'Mumbai',
+    lat: 19.0084, lng: 72.8368,
+    roadName: 'Lalbaug Flyover Approach',
+    contractor: 'Sharma Construction Works',
+    permitDate: '2026-05-01',
+    promisedCompletion: '2026-05-18',
+    status: 'in-progress',
+    overdueDays: 2,
+    zone: 'Dadar',
+    nearSchool: true,
+    description: 'Median structural repairs and drilling'
+  },
+  {
+    id: 'mum5',
+    city: 'Mumbai',
+    lat: 19.0596, lng: 72.8295,
+    roadName: 'Carter Road Promenade',
+    contractor: 'Kovalam Builders',
+    permitDate: '2026-05-05',
+    promisedCompletion: '2026-05-20',
+    status: 'repaired',
+    overdueDays: 0,
+    zone: 'Bandra West',
+    nearSchool: false,
+    description: 'Pavement reconstruction completed successfully'
+  },
+
+  // --- DELHI ---
+  {
+    id: 'del1',
+    city: 'Delhi',
+    lat: 28.6304, lng: 77.2177,
+    roadName: 'Connaught Place Outer Circle',
+    contractor: 'Apex Infra Pvt. Ltd.',
+    permitDate: '2026-04-05',
+    promisedCompletion: '2026-04-20',
+    status: 'critical',
+    overdueDays: 30,
+    zone: 'Central Delhi',
+    nearSchool: false,
+    description: 'Sewer line renovation and excavation'
+  },
+  {
+    id: 'del2',
+    city: 'Delhi',
+    lat: 28.5684, lng: 77.2201,
+    roadName: 'Ring Road (South Ext)',
+    contractor: 'Metropolis Diggers Ltd.',
+    permitDate: '2026-04-12',
+    promisedCompletion: '2026-04-28',
+    status: 'critical',
+    overdueDays: 22,
+    zone: 'South Delhi',
+    nearSchool: true,
+    description: 'Subway corridor work under the main flyover'
+  },
+  {
+    id: 'del3',
+    city: 'Delhi',
+    lat: 28.5355, lng: 77.2728,
+    roadName: 'Okhla Phase 3 Road',
+    contractor: 'Sharma Construction Works',
+    permitDate: '2026-04-20',
+    promisedCompletion: '2026-05-10',
+    status: 'partial',
+    overdueDays: 10,
+    zone: 'South East Delhi',
+    nearSchool: false,
+    description: 'Gas pipeline laying for industrial connections'
+  },
+  {
+    id: 'del4',
+    city: 'Delhi',
+    lat: 28.6442, lng: 77.1878,
+    roadName: 'Karol Bagh Metro Stretch',
+    contractor: 'Civic Build Corp.',
+    permitDate: '2026-05-01',
+    promisedCompletion: '2026-05-18',
+    status: 'in-progress',
+    overdueDays: 2,
+    zone: 'West Delhi',
+    nearSchool: true,
+    description: 'Electrical cable laying across three blocks'
+  },
+  {
+    id: 'del5',
+    city: 'Delhi',
+    lat: 28.6110, lng: 77.2405,
+    roadName: 'Pragati Maidan Tunnel Approach',
+    contractor: 'L&T Infrastructure Corp.',
+    permitDate: '2026-05-10',
+    promisedCompletion: '2026-05-24',
+    status: 'repaired',
+    overdueDays: 0,
+    zone: 'Central Delhi',
+    nearSchool: false,
+    description: 'Drainage pipeline clearance completed'
+  },
+
+  // --- HYDERABAD ---
+  {
+    id: 'hyd1',
+    city: 'Hyderabad',
+    lat: 17.4435, lng: 78.3772,
+    roadName: 'HITEC City Main Road',
+    contractor: 'Kovalam Builders',
+    permitDate: '2026-04-02',
+    promisedCompletion: '2026-04-22',
+    status: 'critical',
+    overdueDays: 28,
+    zone: 'Cyberabad IT Zone',
+    nearSchool: false,
+    description: 'Telecom fibre mesh and metro pillar laying'
+  },
+  {
+    id: 'hyd2',
+    city: 'Hyderabad',
+    lat: 17.4267, lng: 78.4119,
+    roadName: 'Jubilee Hills Road No. 36',
+    contractor: 'Metropolis Diggers Ltd.',
+    permitDate: '2026-04-18',
+    promisedCompletion: '2026-05-02',
+    status: 'partial',
+    overdueDays: 18,
+    zone: 'Jubilee Hills',
+    nearSchool: true,
+    description: 'Stormwater drain reinforcement at junction'
+  },
+  {
+    id: 'hyd3',
+    city: 'Hyderabad',
+    lat: 17.4375, lng: 78.4482,
+    roadName: 'Begumpet Flyover Road',
+    contractor: 'Apex Infra Pvt. Ltd.',
+    permitDate: '2026-04-25',
+    promisedCompletion: '2026-05-15',
+    status: 'partial',
+    overdueDays: 5,
+    zone: 'Secunderabad',
+    nearSchool: false,
+    description: 'Water board digging for fresh trunk lines'
+  },
+  {
+    id: 'hyd4',
+    city: 'Hyderabad',
+    lat: 17.4401, lng: 78.3489,
+    roadName: 'Gachibowli ORR Slip Road',
+    contractor: 'Delta Roads Pvt. Ltd.',
+    permitDate: '2026-05-08',
+    promisedCompletion: '2026-05-22',
+    status: 'in-progress',
+    overdueDays: 0,
+    zone: 'Gachibowli',
+    nearSchool: true,
+    description: 'Road widening and footpath leveling works'
+  },
+  {
+    id: 'hyd5',
+    city: 'Hyderabad',
+    lat: 17.3660, lng: 78.4680,
+    roadName: 'Charminar Pedestrian Way',
+    contractor: 'Civic Build Corp.',
+    permitDate: '2026-05-05',
+    promisedCompletion: '2026-05-19',
+    status: 'repaired',
+    overdueDays: 0,
+    zone: 'Old City',
+    nearSchool: false,
+    description: 'Stone paver replacement works finished'
+  },
+
+  // --- CHENNAI ---
+  {
+    id: 'chn1',
+    city: 'Chennai',
+    lat: 13.0405, lng: 80.2418,
+    roadName: 'Anna Salai Road',
+    contractor: 'L&T Infrastructure Corp.',
+    permitDate: '2026-04-03',
+    promisedCompletion: '2026-04-24',
+    status: 'critical',
+    overdueDays: 26,
+    zone: 'Central Chennai',
+    nearSchool: true,
+    description: 'Metro rail phase 2 station structural excavations'
+  },
+  {
+    id: 'chn2',
+    city: 'Chennai',
+    lat: 12.9649, lng: 80.2458,
+    roadName: 'OMR IT Expressway',
+    contractor: 'Apex Infra Pvt. Ltd.',
+    permitDate: '2026-04-15',
+    promisedCompletion: '2026-05-01',
+    status: 'critical',
+    overdueDays: 19,
+    zone: 'IT Corridor',
+    nearSchool: false,
+    description: 'Major drinking water supply line excavation'
+  },
+  {
+    id: 'chn3',
+    city: 'Chennai',
+    lat: 13.0324, lng: 80.2337,
+    roadName: 'T-Nagar Usman Road',
+    contractor: 'Sharma Construction Works',
+    permitDate: '2026-04-22',
+    promisedCompletion: '2026-05-10',
+    status: 'partial',
+    overdueDays: 10,
+    zone: 'Commercial District',
+    nearSchool: true,
+    description: 'Smart city drainage and duct work'
+  },
+  {
+    id: 'chn4',
+    city: 'Chennai',
+    lat: 13.0075, lng: 80.2015,
+    roadName: 'Kathipara Junction Loop',
+    contractor: 'Kovalam Builders',
+    permitDate: '2026-05-05',
+    promisedCompletion: '2026-05-20',
+    status: 'in-progress',
+    overdueDays: 0,
+    zone: 'Guindy',
+    nearSchool: false,
+    description: 'Underpass maintenance and drainage remodeling'
+  },
+
+  // --- KOLKATA ---
+  {
+    id: 'kol1',
+    city: 'Kolkata',
+    lat: 22.5487, lng: 88.3562,
+    roadName: 'Park Street',
+    contractor: 'Delta Roads Pvt. Ltd.',
+    permitDate: '2026-04-08',
+    promisedCompletion: '2026-04-28',
+    status: 'critical',
+    overdueDays: 22,
+    zone: 'Park Street District',
+    nearSchool: true,
+    description: 'Sewerage network replacement from colonial era'
+  },
+  {
+    id: 'kol2',
+    city: 'Kolkata',
+    lat: 22.5735, lng: 88.4331,
+    roadName: 'Salt Lake Sector V Ring Rd',
+    contractor: 'GreenPath Infra',
+    permitDate: '2026-04-20',
+    promisedCompletion: '2026-05-05',
+    status: 'critical',
+    overdueDays: 15,
+    zone: 'IT Park',
+    nearSchool: false,
+    description: 'Telecommunication and optic network expansions'
+  },
+  {
+    id: 'kol3',
+    city: 'Kolkata',
+    lat: 22.5851, lng: 88.3468,
+    roadName: 'Howrah Bridge Approach',
+    contractor: 'Metropolis Diggers Ltd.',
+    permitDate: '2026-05-01',
+    promisedCompletion: '2026-05-18',
+    status: 'partial',
+    overdueDays: 2,
+    zone: 'Howrah Gate',
+    nearSchool: false,
+    description: 'Structural reinforcement of tram line tracks'
+  },
+  {
+    id: 'kol4',
+    city: 'Kolkata',
+    lat: 22.5195, lng: 88.3681,
+    roadName: 'Gariahat Crossing',
+    contractor: 'Civic Build Corp.',
+    permitDate: '2026-05-10',
+    promisedCompletion: '2026-05-25',
+    status: 'in-progress',
+    overdueDays: 0,
+    zone: 'South Kolkata',
+    nearSchool: true,
+    description: 'Footpath upgrade and cable ducting work'
+  },
+
+  // --- PUNE ---
+  {
+    id: 'pun1',
+    city: 'Pune',
+    lat: 18.5222, lng: 73.8412,
+    roadName: 'FC Road (Fergusson College)',
+    contractor: 'GreenPath Infra',
+    permitDate: '2026-04-05',
+    promisedCompletion: '2026-04-25',
+    status: 'critical',
+    overdueDays: 25,
+    zone: 'Shivaji Nagar',
+    nearSchool: true,
+    description: 'Water pipe reconstruction and pavement widening'
+  },
+  {
+    id: 'pun2',
+    city: 'Pune',
+    lat: 18.5912, lng: 73.7389,
+    roadName: 'Hinjawadi Phase 1 Main Rd',
+    contractor: 'Metropolis Diggers Ltd.',
+    permitDate: '2026-04-18',
+    promisedCompletion: '2026-05-04',
+    status: 'critical',
+    overdueDays: 16,
+    zone: 'Hinjawadi IT Park',
+    nearSchool: false,
+    description: 'Metro line 3 pillar drilling and structural work'
+  },
+  {
+    id: 'pun3',
+    city: 'Pune',
+    lat: 18.5679, lng: 73.9143,
+    roadName: 'Viman Nagar Road',
+    contractor: 'Apex Infra Pvt. Ltd.',
+    permitDate: '2026-04-28',
+    promisedCompletion: '2026-05-15',
+    status: 'partial',
+    overdueDays: 5,
+    zone: 'Viman Nagar',
+    nearSchool: true,
+    description: 'Stormwater line excavation and road leveling'
+  },
+  {
+    id: 'pun4',
+    city: 'Pune',
+    lat: 18.5332, lng: 73.8306,
+    roadName: 'Senapati Bapat Road',
+    contractor: 'Sharma Construction Works',
+    permitDate: '2026-05-10',
+    promisedCompletion: '2026-05-24',
+    status: 'in-progress',
+    overdueDays: 0,
+    zone: 'Model Colony',
+    nearSchool: false,
+    description: 'Substation cabling work, left lane closed'
   },
 ];
 
@@ -256,16 +660,16 @@ export const citizenReports: CitizenReport[] = [
 ];
 
 export const tickerItems: TickerItem[] = [
-  { type: 'new', message: '🔴 NEW DIG: MG Road blocked since 6:00 AM — Apex Infra' },
-  { type: 'overdue', message: '⚠️ OVERDUE: Metropolis Diggers — Day 57 of 15-day promise on ORR' },
-  { type: 'repaired', message: '✅ REPAIRED: HSR Layout Sector 7 — All lanes now open' },
-  { type: 'info', message: '📍 47 active dig sites across Bengaluru right now' },
-  { type: 'overdue', message: '⚠️ OVERDUE: Sharma Construction — Yeshwanthpur Road Day 32' },
-  { type: 'new', message: '🔴 NEW DIG: Koramangala 80ft Road — Fresh permit logged 2h ago' },
-  { type: 'repaired', message: '✅ REPAIRED: Banashankari Temple Road — Completed ahead of schedule 🎉' },
-  { type: 'info', message: '🚨 HIGH CHAOS ALERT: Tomorrow 8–10AM — CBD congestion predicted SEVERE' },
-  { type: 'overdue', message: '⚠️ OVERDUE: Civic Build Corp — Old Madras Road Day 20' },
-  { type: 'new', message: '🔴 NEW DIG: Indiranagar 100ft Road — Median renovation started' },
+  { type: 'new', message: '🔴 NEW DIG (Bengaluru): MG Road blocked since 6:00 AM — Apex Infra' },
+  { type: 'overdue', message: '⚠️ OVERDUE (Mumbai): Metropolis Diggers — Day 57 of 15-day promise on ORR' },
+  { type: 'repaired', message: '✅ REPAIRED (Pune): Hinjawadi Phase 1 — All lanes now open' },
+  { type: 'info', message: '📍 240+ active dig sites across 7 major Indian cities right now' },
+  { type: 'overdue', message: '⚠️ OVERDUE (Delhi): Sharma Construction — Ring Road South Ext Day 32' },
+  { type: 'new', message: '🔴 NEW DIG (Hyderabad): HITEC City Road — Fresh permit logged 2h ago' },
+  { type: 'repaired', message: '✅ REPAIRED (Chennai): T-Nagar Usman Road completed ahead of schedule 🎉' },
+  { type: 'info', message: '🚨 HIGH CHAOS ALERT (Mumbai): Saki Naka Junction congestion predicted SEVERE' },
+  { type: 'overdue', message: '⚠️ OVERDUE (Kolkata): Delta Roads — Park Street Day 22' },
+  { type: 'new', message: '🔴 NEW DIG (Delhi): Connaught Place Outer Circle excavation started' },
 ];
 
 export const howItWorksSteps = [
