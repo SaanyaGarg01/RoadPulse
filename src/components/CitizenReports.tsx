@@ -8,11 +8,16 @@ const CitizenReports: React.FC = () => {
   const [reports, setReports] = useState<CitizenReport[]>(citizenReports);
   const [input, setInput] = useState('');
   const [activeReport, setActiveReport] = useState<string | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll when new reports appear
+  // Auto-scroll the chat container when new reports appear (without scrolling the main page)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [reports]);
 
   // Simulate incoming reports
@@ -100,7 +105,7 @@ const CitizenReports: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <div style={{ height: '420px', overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div ref={chatContainerRef} style={{ height: '420px', overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <AnimatePresence initial={false}>
               {reports.map((report, i) => (
                 <motion.div
@@ -148,7 +153,6 @@ const CitizenReports: React.FC = () => {
                 </motion.div>
               ))}
             </AnimatePresence>
-            <div ref={bottomRef} />
           </div>
 
           {/* Input area */}
